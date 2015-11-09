@@ -1,0 +1,732 @@
+・開始時体力の選択肢追加とメモスペースを作りました。メモスペースは動作に影響しないので凸中のメンバーの名前を書くなど自由に使って下さい。
+・開始時体力の参考
+　ドラ1後の再凸 = 85
+　ドラ2後の再凸 = 72.75
+　ドラ3後の再凸 = 61.42
+　ドラ4後の再凸 = 52.21
+　ドラ5後の再凸 = 44.38
+
+#javascript{{
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="Shift_JIS">
+<title>ダメージ計算ツールv2</title>
+<style type="text/css">
+<!--
+
+table {
+	border-collapse: collapse;
+}
+
+table, th, td {
+	border: 1px #808080 solid;
+}
+
+th, td {
+	padding: 3px 10px;
+}
+
+th {
+	background-color: #d3e9fa;
+}
+
+td {
+	background-color: #ffffff;
+}
+
+td strong {
+	color: #ff0000;
+}
+
+-->
+</style>
+
+<script type="text/javascript">
+<!--
+
+function keisantotal() {
+    // 個人合算値の取得
+	var firstfield = parseInt(document.form1.field1.value);
+	var secondfield = parseInt(document.form1.field2.value);
+	var thirdfield = parseInt(document.form1.field3.value);
+	var fourthfield = parseInt(document.form1.field4.value);
+	var fifthfield = parseInt(document.form1.field5.value);
+	var sixthfield = parseInt(document.form1.field6.value);
+	var seventhfield = parseInt(document.form1.field7.value);
+	var eighthfield = parseInt(document.form1.field8.value);
+	var ninethfield = parseInt(document.form1.field9.value);
+	var tenthfield = parseInt(document.form1.field10.value);
+	// 合計を計算
+	var total = parseInt(document.form1.OutSide.value); // 外からのダメージ代入
+    total = total + firstfield + secondfield + thirdfield + fourthfield + fifthfield + sixthfield + seventhfield + eighthfield + ninethfield + tenthfield;
+
+	// 合計を表示
+	document.form1.field_total.value = total;
+}
+
+function keisan(argument) {
+
+	// 配列定義
+	var StartHP = new Array(10); // 残量
+	var Attack = new Array(10);  // ドラ
+	var Poison = new Array(10);  // 毒
+	var field = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];   // 個人ダメ
+
+	// 配列に選択数値を代入
+	StartHP[0] = parseInt(document.form1.StartHP1.selectedIndex);
+	StartHP[1] = parseInt(document.form1.StartHP2.selectedIndex);
+	StartHP[2] = parseInt(document.form1.StartHP3.selectedIndex);
+	StartHP[3] = parseInt(document.form1.StartHP4.selectedIndex);
+	StartHP[4] = parseInt(document.form1.StartHP5.selectedIndex);
+	StartHP[5] = parseInt(document.form1.StartHP6.selectedIndex);
+	StartHP[6] = parseInt(document.form1.StartHP7.selectedIndex);
+	StartHP[7] = parseInt(document.form1.StartHP8.selectedIndex);
+	StartHP[8] = parseInt(document.form1.StartHP9.selectedIndex);
+	StartHP[9] = parseInt(document.form1.StartHP10.selectedIndex);
+
+	Attack[0] = parseInt(document.form1.Attack1.selectedIndex);
+	Attack[1] = parseInt(document.form1.Attack2.selectedIndex);
+	Attack[2] = parseInt(document.form1.Attack3.selectedIndex);
+	Attack[3] = parseInt(document.form1.Attack4.selectedIndex);
+	Attack[4] = parseInt(document.form1.Attack5.selectedIndex);
+	Attack[5] = parseInt(document.form1.Attack6.selectedIndex);
+	Attack[6] = parseInt(document.form1.Attack7.selectedIndex);
+	Attack[7] = parseInt(document.form1.Attack8.selectedIndex);
+	Attack[8] = parseInt(document.form1.Attack9.selectedIndex);
+	Attack[9] = parseInt(document.form1.Attack10.selectedIndex);
+
+	Poison[0] = parseInt(document.form1.Poison1.selectedIndex);
+	Poison[1] = parseInt(document.form1.Poison2.selectedIndex);
+	Poison[2] = parseInt(document.form1.Poison3.selectedIndex);
+	Poison[3] = parseInt(document.form1.Poison4.selectedIndex);
+	Poison[4] = parseInt(document.form1.Poison5.selectedIndex);
+	Poison[5] = parseInt(document.form1.Poison6.selectedIndex);
+	Poison[6] = parseInt(document.form1.Poison7.selectedIndex);
+	Poison[7] = parseInt(document.form1.Poison8.selectedIndex);
+	Poison[8] = parseInt(document.form1.Poison9.selectedIndex);
+	Poison[9] = parseInt(document.form1.Poison10.selectedIndex);
+
+    // 合算ダメージ計算
+	// ドラダメージ計算
+	// 数判定(2以上の場合は処理ループ)
+	switch (StartHP[argument]){
+		case 0:
+					StartHP[argument] = 100;
+					break;
+		case 1:
+					StartHP[argument] = 85;
+					break;
+		case 2:
+					StartHP[argument] = 72.75;
+					break;
+		case 3:
+					StartHP[argument] = 70;
+					break;
+		case 4:
+					StartHP[argument] = 61.42;
+					break;
+		case 5:
+					StartHP[argument] = 52.21;
+					break;
+		case 6:
+					StartHP[argument] = 50;
+					break;
+		case 7:
+					StartHP[argument] = 44.38;
+					break;
+		case 8:
+					StartHP[argument] = 30;
+					break;
+	}
+
+	if (Attack[argument] == 1){
+		field[argument] = StartHP[argument] * 0.15;
+
+	}else if (Attack[argument] > 1){
+
+	        for (j = Attack[argument]; j > 0; j = j - 1){
+				var AttackTmp = StartHP[argument] * 0.15;
+				field[argument] = field[argument] + AttackTmp;
+				StartHP[argument] = StartHP[argument] - AttackTmp;
+			}
+
+	}
+
+	// 毒ダメージ計算
+	if (Poison[argument] >= 1){
+		var PoisonTmp = Poison[argument] * 5;
+		field[argument] = field[argument] + PoisonTmp;
+	}
+
+    // 個人合算値の表示
+	switch(argument){
+		case 0:
+				document.form1.field1.value = field[0];
+				break;
+		case 1:
+				document.form1.field2.value = field[1];
+				break;
+		case 2:
+				document.form1.field3.value = field[2];
+				break;
+		case 3:
+				document.form1.field4.value = field[3];
+				break;
+		case 4:
+				document.form1.field5.value = field[4];
+				break;
+		case 5:
+				document.form1.field6.value = field[5];
+				break;
+		case 6:
+				document.form1.field7.value = field[6];
+				break;
+		case 7:
+				document.form1.field8.value = field[7];
+				break;
+		case 8:
+				document.form1.field9.value = field[8];
+				break;
+		case 9:
+				document.form1.field10.value = field[9];
+				break;
+	}
+	keisantotal();
+
+}
+
+//--> 
+</script> 
+
+</head>
+
+<body bgcolor="#ffffff" onContextmenu="return false">
+<form action="#" name="form1">
+
+<table>
+<tr>
+<th>開始時体力残量(%)</th>
+<th>ドラ(回数)</th>
+<th>毒(ターン数)</th>
+<th>合算ダメージ(%)</th>
+<th>メモスペース</th>
+</tr>
+
+
+<tr>
+<td><select name="StartHP1">
+<option>100</option>
+<option>85</option>
+<option>72.75</option>
+<option>70</option>
+<option>61.42</option>
+<option>52.21</option>
+<option>50</option>
+<option>44.38</option>
+<option>30</option>
+</select></td>
+<td><select name="Attack1" onchange="keisan(0)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+</select></td>
+<td><select name="Poison1" onchange="keisan(0)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+</select></td>
+<td><input type="text" name="field1" size="8" value="0" onchange="keisantotal()"></td>
+<td><input type="text" name="comment" size="8"></td></tr>
+
+<tr>
+<td><select name="StartHP2">
+<option>100</option>
+<option>85</option>
+<option>72.75</option>
+<option>70</option>
+<option>61.42</option>
+<option>52.21</option>
+<option>50</option>
+<option>44.38</option>
+<option>30</option>
+</select></td>
+<td><select name="Attack2" onchange="keisan(1)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+</select></td>
+<td><select name="Poison2" onchange="keisan(1)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+</select></td>
+<td><input type="text" name="field2" size="8" value="0" onchange="keisantotal()"></td>
+<td><input type="text" name="comment" size="8"></td></tr>
+
+<tr>
+<td><select name="StartHP3">
+<option>100</option>
+<option>85</option>
+<option>72.75</option>
+<option>70</option>
+<option>61.42</option>
+<option>52.21</option>
+<option>50</option>
+<option>44.38</option>
+<option>30</option>
+</select></td>
+<td><select name="Attack3" onchange="keisan(2)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+</select></td>
+<td><select name="Poison3" onchange="keisan(2)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+</select></td>
+<td><input type="text" name="field3" size="8" value="0" onchange="keisantotal()"></td>
+<td><input type="text" name="comment" size="8"></td></tr>
+
+<tr>
+<td><select name="StartHP4">
+<option>100</option>
+<option>85</option>
+<option>72.75</option>
+<option>70</option>
+<option>61.42</option>
+<option>52.21</option>
+<option>50</option>
+<option>44.38</option>
+<option>30</option>
+</select></td>
+<td><select name="Attack4" onchange="keisan(3)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+</select></td>
+<td><select name="Poison4" onchange="keisan(3)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+</select></td>
+<td><input type="text" name="field4" size="8" value="0" onchange="keisantotal()"></td>
+<td><input type="text" name="comment" size="8"></td></tr>
+
+<tr>
+<td><select name="StartHP5">
+<option>100</option>
+<option>85</option>
+<option>72.75</option>
+<option>70</option>
+<option>61.42</option>
+<option>52.21</option>
+<option>50</option>
+<option>44.38</option>
+<option>30</option>
+</select></td>
+<td><select name="Attack5" onchange="keisan(4)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+</select></td>
+<td><select name="Poison5" onchange="keisan(4)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+</select></td>
+<td><input type="text" name="field5" size="8" value="0" onchange="keisantotal()"></td>
+<td><input type="text" name="comment" size="8"></td></tr>
+
+<tr>
+<td><select name="StartHP6">
+<option>100</option>
+<option>85</option>
+<option>72.75</option>
+<option>70</option>
+<option>61.42</option>
+<option>52.21</option>
+<option>50</option>
+<option>44.38</option>
+<option>30</option>
+</select></td>
+<td><select name="Attack6" onchange="keisan(5)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+</select></td>
+<td><select name="Poison6" onchange="keisan(5)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+</select></td>
+<td><input type="text" name="field6" size="8" value="0" onchange="keisantotal()"></td>
+<td><input type="text" name="comment" size="8"></td></tr>
+
+<tr>
+<td><select name="StartHP7">
+<option>100</option>
+<option>85</option>
+<option>72.75</option>
+<option>70</option>
+<option>61.42</option>
+<option>52.21</option>
+<option>50</option>
+<option>44.38</option>
+<option>30</option>
+</select></td>
+<td><select name="Attack7" onchange="keisan(6)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+</select></td>
+<td><select name="Poison7" onchange="keisan(6)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+</select></td>
+<td><input type="text" name="field7" size="8" value="0" onchange="keisantotal()"></td>
+<td><input type="text" name="comment" size="8"></td></tr>
+
+<tr>
+<td><select name="StartHP8">
+<option>100</option>
+<option>85</option>
+<option>72.75</option>
+<option>70</option>
+<option>61.42</option>
+<option>52.21</option>
+<option>50</option>
+<option>44.38</option>
+<option>30</option>
+</select></td>
+<td><select name="Attack8" onchange="keisan(7)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+</select></td>
+<td><select name="Poison8" onchange="keisan(7)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+</select></td>
+<td><input type="text" name="field8" size="8" value="0" onchange="keisantotal()"></td>
+<td><input type="text" name="comment" size="8"></td></tr>
+
+<tr>
+<td><select name="StartHP9">
+<option>100</option>
+<option>85</option>
+<option>72.75</option>
+<option>70</option>
+<option>61.42</option>
+<option>52.21</option>
+<option>50</option>
+<option>44.38</option>
+<option>30</option>
+</select></td>
+<td><select name="Attack9" onchange="keisan(8)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+</select></td>
+<td><select name="Poison9" onchange="keisan(8)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+</select></td>
+<td><input type="text" name="field9" size="8" value="0" onchange="keisantotal()"></td>
+<td><input type="text" name="comment" size="8"></td></tr>
+
+<tr>
+<td><select name="StartHP10">
+<option>100</option>
+<option>85</option>
+<option>72.75</option>
+<option>70</option>
+<option>61.42</option>
+<option>52.21</option>
+<option>50</option>
+<option>44.38</option>
+<option>30</option>
+</select></td>
+<td><select name="Attack10" onchange="keisan(9)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+</select></td>
+<td><select name="Poison10" onchange="keisan(9)">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+</select></td>
+<td><input type="text" name="field10" size="8" value="0" onchange="keisantotal()"></td>
+<td><input type="text" name="comment" size="8"></td></tr>
+
+<tr>
+<td align="right" colspan="3"><strong>外からのダメージ(%)</strong></td>
+<td><select name="OutSide" onchange="keisantotal()">
+<option>0</option>
+<option>10</option>
+<option>20</option>
+<option>30</option>
+<option>40</option>
+<option>50</option>
+<option>60</option>
+<option>70</option>
+<option>80</option>
+<option>90</option>
+</select></td>
+</tr>
+
+
+<tr>
+<td align="right" colspan="3"><strong>合算ダメージ(%)</strong></td>
+<td><input type="text" name="field_total" size="8" value="0"></td>
+<td><input type="button" value="合算計算(動かない時用)" onClick="keisantotal()"></td></tr>
+</table>
+</form>
+
+</body>
+</html>
+}}
